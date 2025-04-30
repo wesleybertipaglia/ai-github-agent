@@ -32,3 +32,8 @@ run:
 clean:
 	@echo "Removendo ambiente virtual..."
 	rm -rf $(VENV_DIR)
+
+add-cron:
+	@echo "Adicionando cron job..."
+	@(crontab -l 2>/dev/null | grep -v 'job.sh'; echo "0 * * * * $(pwd)/src/jobs/monitor/job.sh") | crontab -
+	@echo "Cron job adicionado para rodar a cada hora."
