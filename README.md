@@ -36,7 +36,7 @@ Um agente simples em Python que consulta issues de um repositório GitHub, resum
 ```bash
 # clona o projeto e acessa o diretorio
 git clone https://github.com/seu-usuario/ai-github-agent.git
-cd repository-agent
+cd ai-github-agent
 
 # cria um ambiente virtual e atova
 make venv
