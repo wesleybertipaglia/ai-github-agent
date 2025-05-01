@@ -2,21 +2,22 @@ from agents.base.agent import IAgent
 from agents.discord.api import run_discord_bot
 
 class DiscordAgent(IAgent):
-    def run(self, data: str) -> str:
+    def __init__(self):
+        super().__init__()
+        self.processes_multiple = True
+
+    def run(self, messages):
         print("[DiscordAgent] Preparando mensagem para envio...")
+        
+        valid_messages = [msg for msg in messages if msg.strip()]
 
-        if not data:
-            print("[DiscordAgent] Nenhuma mensagem para enviar. Executando fallback.")
-            return self.fallback()
+        if valid_messages:
+            print(f"[DiscordAgent] Enviando {len(valid_messages)} mensagens para o Discord.")
+            run_discord_bot(valid_messages)
+        else:
+            print("[DiscordAgent] Nenhuma mensagem válida para enviar. Fallback acionado.")
+            return self.fallback(messages)
 
-        try:
-            run_discord_bot(data)
-            print("[DiscordAgent] Mensagem enviada com sucesso.")
-            return "Mensagem enviada com sucesso."
-        except Exception as e:
-            print(f"[DiscordAgent] Erro ao enviar mensagem: {e}")
-            return self.fallback()
-
-    def fallback(self, data=None) -> str:
-        print("[DiscordAgent] Fallback: Nenhuma notificação enviada.")
-        return "Nenhuma notificação enviada."
+    def fallback(self, messages):
+        print("[DiscordAgent] Fallback: Nenhuma mensagem enviada.")
+        return ["Nenhuma mensagem válida para envio."]

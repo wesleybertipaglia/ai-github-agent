@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 
 class IAgent(ABC):
+    processes_multiple = False
+
     @abstractmethod
     def run(self, data):
         pass

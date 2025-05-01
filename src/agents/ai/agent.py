@@ -1,21 +1,23 @@
 from agents.base.agent import IAgent
-from agents.ai.api import resumir_issues
+from agents.ai.api import analisar_issue
 
 class AiAgent(IAgent):
-    def run(self, data: str) -> str:
-        if not data:
-            print("[AiAgent] Nenhuma issue recebida. Executando fallback.")
-            return self.fallback()
-
-        print("[AiAgent] Resumindo issues...")
+    def run(self, issue):
+        print("[AiAgent] Gerando análise da issue...")
         try:
-            resumo = resumir_issues(data)
-            print(f"[AiAgent] Resumo gerado:\n{resumo}")
-            return resumo
+            analise, sugestao = analisar_issue(issue)
+            return self.return_issue(issue, analise, sugestao)
         except Exception as e:
-            print(f"[AiAgent] Erro ao resumir: {e}. Executando fallback.")
-            return self.fallback()
+            print(f"[AiAgent] Erro na IA: {e}. Fallback.")
+            return self.fallback(issue)
 
-    def fallback(self, data=None) -> str:
-        print("[AiAgent] Fallback: Nenhuma issue para resumir ou erro na IA.")
-        return "Sem resumo disponível."
+    def fallback(self, issue):
+        print("[AiAgent] Fallback: utilizando dados padrão.")
+        return self.return_issue(issue)
+
+    def return_issue(self, issue, analise=None, sugestao=None):
+        return {
+            "issue": issue,
+            "analise": analise or "Análise não disponível.",
+            "sugestao": sugestao or "Sugestão não disponível."
+        }
