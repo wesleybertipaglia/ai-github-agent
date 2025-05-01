@@ -5,21 +5,25 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
-async def send_message(message: str):
+async def send_messages(messages):
     await client.wait_until_ready()
-
     channel = client.get_channel(int(CHANNEL_ID))
+
     if channel:
-        await channel.send(message)
-        print("[DiscordAPI] Mensagem enviada.")
+        for message in messages:
+            if message.strip():
+                await channel.send(message)
+                print("[DiscordAPI] Mensagem enviada.")
+            else:
+                print("[DiscordAPI] Mensagem vazia ignorada.")
     else:
         print("[DiscordAPI] Canal não encontrado.")
 
     await client.close()
 
-def run_discord_bot(message: str):
+def run_discord_bot(messages):
     @client.event
     async def on_ready():
-        await send_message(message)
+        await send_messages(messages)
 
     client.run(DISCORD_TOKEN)
